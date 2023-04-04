@@ -5,55 +5,31 @@
 
 struct Table {
     int num_attributes;
-    int total_attributes;
     char** attributes;
-    TYPE* types;
     int primary_attribute;
-
-    int num_rows;
-    int total_rows;
-    void*** rows;
+    Hashtable hashtable;
 };
 
-Table table_create(int total_attributes, int total_rows) {
-    Table table = malloc(sizeof(Table));
-    table->num_attributes = 0;
-    table->total_attributes = total_attributes;
-    table->attributes = malloc(sizeof(char*) * total_attributes);
-    table->types = malloc(sizeof(TYPE) * total_attributes);
-    table->primary_attribute = -1;
-
-    table->num_rows = 0;
-    table->total_rows = total_rows;
-    table->rows = malloc(sizeof(void**) * total_rows);
+Table table_create(int capacity, int num_attributes, int primary_attribute, char** attributes) {
+    Table table = malloc(sizeof(struct Table));
+    table->hashtable = hashtable_create(capacity);
+    table->num_attributes = num_attributes;
+    table->primary_attribute = primary_attribute;
+    table->attributes = attributes;
     return table;
 }
 
-void table_free(Table table) {
-    for (int i = 0; i < table->num_attributes; i++)
-        free(table->attributes[i]);
-    free(table->attributes);
-
-    for (int i = 0; i < table->num_rows; i++)
-        free(table->rows[i]);
-    free(table->rows);
-
-    free(table);
-}
-
-void table_add_attribute(Table table, char* name, TYPE type) {
-    if (table->num_attributes == table->total_attributes) return;
-    table->attributes[table->num_attributes] = name;
-    table->types[table->num_attributes] = type;
-    table->num_attributes++;
-}
-
-void table_add_primary_attribute(Table table, char* name, TYPE type) {
-    if (table->num_attributes == table->total_attributes) return;
-    if (table->primary_attribute == -1) return;
-    table->primary_attribute = table->num_attributes;
-    table_add_attribute(table, name, type);
-}
+//void table_free(Table table) {
+//    for (int i = 0; i < table->num_attributes; i++)
+//        free(table->attributes[i]);
+//    free(table->attributes);
+//
+//    for (int i = 0; i < table->num_rows; i++)
+//        free(table->rows[i]);
+//    free(table->rows);
+//
+//    free(table);
+//}
 
 void print_schema(Table table) {
     printf("Table schema:\n");
@@ -66,33 +42,30 @@ void print_schema(Table table) {
     printf("\n");
 }
 
-
-
-void table_insert(Table table, void** values) {
-    void* key = values[table->primary_attribute];
-    TYPE key_type = table->types[table->primary_attribute];
-
-
-
-    table->rows[index] = values;
-    table->num_rows++;
+void table_insert(Table table, char** values) {
+    char* key = values[table->primary_attribute];
+    if (hashtable_get(table->hashtable, key) != NULL) return;
+    hashtable_put(table->hashtable, key, values);
 }
 
-void print_table(Table table) {
-    for (int i = 0; i < table->num_rows; i++) {
-        void** row = table->rows[i];
+void table_print(Table table) {
+    printf("Table contents:\n");
+    for (int i = 0; i < table->num_attributes; i++) {
+        printf("%s", table->attributes[i]);
+        printf("\t\t");
+    }
+    printf("\n");
+
+    int capacity = hashtable_capacity(table->hashtable);
+    for (int i = 0; i < capacity; i++) {
+        char** row = (char **) hashtable_get_by_index(table->hashtable, i);
+        if (row == NULL) continue;
+
         for (int j = 0; j < table->num_attributes; j++) {
-            TYPE type = table->types[j];
-            switch (type) {
-                case INT:
-                    printf("%d", *((int*)row[j]));
-                    break;
-                case STRING:
-                    printf("%s", (char*)row[j]);
-                    break;
-            }
-            printf("\t");
+            printf("%s", row[j]);
+            printf("\t\t");
         }
         printf("\n");
     }
+    printf("\n");
 }

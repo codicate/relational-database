@@ -1,88 +1,113 @@
 #include "hashtable.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 struct Hashtable {
-    TYPE type;
-    int num_rows;
-    int total_rows;
-    void*** rows;
-    void** keys;
+    int size;
+    int capacity;
+    void** rows;
+    char** keys;
 };
 
-Hashtable hashtable_create(TYPE type, int total_rows) {
-    Hashtable hashtable = malloc(sizeof(Hashtable));
+Hashtable hashtable_create(int capacity) {
+    Hashtable hashtable = malloc(sizeof(struct Hashtable));
 
-    hashtable->type = type;
-    hashtable->num_rows = 0;
-    hashtable->total_rows = total_rows;
-    hashtable->keys = malloc(sizeof(void*) * total_rows);
-    hashtable->rows = malloc(sizeof(void**) * total_rows);
-
-    for (int i = 0; i < total_rows; i++) {
-        hashtable->keys[i] = NULL;
-        hashtable->rows[i] = NULL;
-    }
+    hashtable->size = 0;
+    hashtable->capacity = capacity;
+    hashtable->keys = malloc(sizeof(char*) * capacity);
+    hashtable->rows = malloc(sizeof(void*) * capacity);
 
     return hashtable;
 }
 
-void hashtable_free(Hashtable hashtable) {
-    for (int i = 0; i < hashtable->num_rows; i++) {
-        free(hashtable->keys[i]);
-        free(hashtable->rows[i]);
-    }
+//void hashtable_free(Hashtable hashtable) {
+//    for (int i = 0; i < hashtable->num_rows; i++) {
+//        free(hashtable->keys[i]);
+//        free(hashtable->rows[i]);
+//    }
+//
+//    free(hashtable->keys);
+//    free(hashtable->rows);
+//    free(hashtable);
+//}
 
-    free(hashtable->keys);
-    free(hashtable->rows);
-    free(hashtable);
+int hashtable_size(Hashtable hashtable) {
+    return hashtable->size;
 }
 
-int int_hash(void* key, int total_rows) {
-    int num = *((int*)key);
-    return num % total_rows;
+int hashtable_capacity(Hashtable hashtable) {
+    return hashtable->capacity;
 }
 
-int string_hash(void* key, int total_rows) {
-    char* str = (char*) key;
+int string_hash(const char* key, int total_rows) {
     int hash = 0;
-    for (int i = 0; str[i] != '\0'; i++)
-        hash += str[i];
+    for (int i = 0; key[i] != '\0'; i++)
+        hash += key[i];
     return hash % total_rows;
 }
 
-int quadratic_probing(Hashtable hashtable, int index, void* value) {
+int hashtable_put(Hashtable hashtable, char* key, void* values) {
+    if (hashtable->size == hashtable->capacity) return -1;
+    int index = string_hash(key, hashtable->capacity);
 
-    if (*(hashtable->keys[index]) != value) {
-        int i = 1;
-        while (hashtable->keys[(index + i) % hashtable->total_rows] != NULL)
-            i++;
-        index = (index + i) % hashtable->total_rows;
-    }
-    return index;
-}
-
-void hashtable_insert(Hashtable hashtable, void* key, void** values) {
-    if (hashtable->num_rows == hashtable->total_rows) return;
-
-    int index;
-    switch (hashtable->type) {
-        case INT:
-            index = int_hash(key, hashtable->total_rows);
-            break;
-        case STRING:
-            index = string_hash(key, hashtable->total_rows);
-            break;
-    }
-
-    if (hashtable->rows[index] != NULL) {
-        int i = 1;
-        while (hashtable->rows[(index + i) % hashtable->total_rows] != NULL)
-            i++;
-        index = (index + i) % hashtable->total_rows;
+    int i = 1;
+    while (hashtable->keys[index] != NULL) {
+        index = (index + i * i) % hashtable->capacity;
+        i++;
     }
 
     hashtable->keys[index] = key;
     hashtable->rows[index] = values;
-    hashtable->num_rows++;
+    hashtable->size++;
+    return index;
+}
+
+void** hashtable_get(Hashtable hashtable, char* key) {
+    int index = string_hash(key, hashtable->capacity);
+
+    int i = 1;
+    while (hashtable->keys[index] != NULL) {
+        if (strcmp(hashtable->keys[index], key) == 0)
+            return hashtable->rows[index];
+        index = (index + i * i) % hashtable->capacity;
+        i++;
+    }
+
+    return NULL;
+}
+
+void** hashtable_get_by_index(Hashtable hashtable, int index) {
+    return hashtable->rows[index];
+}
+
+int hashtable_remove(Hashtable hashtable, char* key) {
+    int index = string_hash(key, hashtable->capacity);
+
+    int i = 1;
+    while (hashtable->keys[index] != NULL) {
+        if (strcmp(hashtable->keys[index], key) == 0) {
+            hashtable->keys[index] = NULL;
+            hashtable->rows[index] = NULL;
+            hashtable->size--;
+            return index;
+        }
+        index = (index + i * i) % hashtable->capacity;
+        i++;
+    }
+
+    return -1;
+}
+
+void hashtable_print(Hashtable hashtable) {
+    printf("Hashtable:\n");
+    for (int i = 0; i < hashtable->capacity; i++) {
+        printf("%d: ", i);
+        if (hashtable->keys[i] != NULL) {
+            printf("%s: ", hashtable->keys[i]);
+            printf("%p ",  (void*) hashtable->rows[i]);
+        }
+        printf("\n");
+    }
+    printf("\n");
 }
