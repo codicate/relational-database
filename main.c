@@ -3,7 +3,17 @@
 #include "table.h"
 #include "hashtable.h"
 
-void print_query_result(Table table, char*** result) {
+void query_table(Table table, char** query) {
+    char*** result = table_lookup(table, query);
+
+    printf("Query: ");
+    for (int i = 0; i < table_num_attributes(table); i++) {
+        printf("%s", query[i]);
+        if (i < table_num_attributes(table) - 1)
+            printf(", ");
+    }
+    printf("\n");
+
     if (result == NULL || result[0] == NULL) {
         printf("No results found.\n");
         return;
@@ -38,6 +48,5 @@ int main(void) {
 
     table_print(PNB);
 
-    char*** result = table_lookup(PNB, (char*[]){"*", "G. Jones", "*"});
-    print_query_result(PNB, result);
+    query_table(PNB, (char*[]){"*", "G", "*"});
 }
