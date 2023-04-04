@@ -3,6 +3,24 @@
 #include "table.h"
 #include "hashtable.h"
 
+void print_query_result(Table table, char*** result) {
+    if (result == NULL || result[0] == NULL) {
+        printf("No results found.\n");
+        return;
+    }
+
+    int num_columns = table_num_attributes(table);
+    for (int i = 0; result[i] != NULL; i++) {
+        for (int j = 0; j < num_columns; j++) {
+            printf("%s", result[i][j]);
+            if (j < num_columns - 1)
+                printf(", ");
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
 int main(void) {
     Table PNB = table_create(50, 3, 0, (char*[]){"PlayerId", "Name", "BirthDate"});
     print_schema(PNB);
@@ -19,4 +37,7 @@ int main(void) {
     table_insert(PNB, (char*[]){"39468", "G. Jones", "25 Feb 1990"});
 
     table_print(PNB);
+
+    char*** result = table_lookup(PNB, (char*[]){"*", "G. Jones", "*"});
+    print_query_result(PNB, result);
 }

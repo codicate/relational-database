@@ -63,7 +63,7 @@ int hashtable_put(Hashtable hashtable, char* key, void* values) {
     return index;
 }
 
-void** hashtable_get(Hashtable hashtable, char* key) {
+void* hashtable_get(Hashtable hashtable, char* key) {
     int index = string_hash(key, hashtable->capacity);
 
     int i = 1;
@@ -77,8 +77,20 @@ void** hashtable_get(Hashtable hashtable, char* key) {
     return NULL;
 }
 
-void** hashtable_get_by_index(Hashtable hashtable, int index) {
+void* hashtable_get_by_index(Hashtable hashtable, int index) {
     return hashtable->rows[index];
+}
+
+void** hashtable_values(Hashtable hashtable) {
+    void** values = malloc(sizeof(void*) * hashtable->size);
+    int j = 0;
+    for (int i = 0; i < hashtable->capacity; i++) {
+        if (hashtable->keys[i] != NULL) {
+            values[j] = hashtable->rows[i];
+            j++;
+        }
+    }
+    return values;
 }
 
 int hashtable_remove(Hashtable hashtable, char* key) {

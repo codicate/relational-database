@@ -13,9 +13,11 @@ int hashtable_capacity(Hashtable hashtable);
 
 int hashtable_put(Hashtable hashtable, char* key, void* values);
 
-void** hashtable_get(Hashtable hashtable, char* key);
+void* hashtable_get(Hashtable hashtable, char* key);
 
-void** hashtable_get_by_index(Hashtable hashtable, int index);
+void* hashtable_get_by_index(Hashtable hashtable, int index);
+
+void** hashtable_values(Hashtable hashtable);
 
 int hashtable_remove(Hashtable hashtable, char* key);
 
