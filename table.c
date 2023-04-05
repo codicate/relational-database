@@ -52,7 +52,7 @@ int table_num_attributes(Table table) {
 }
 
 void print_schema(Table table) {
-    printf("Table schema:\n");
+//    printf("Table schema:\n");
     for (int i = 0; i < table->num_attributes; i++) {
         printf("%s", table->attributes[i]);
         if (i == table->primary_attribute)
@@ -63,8 +63,8 @@ void print_schema(Table table) {
 }
 
 bool table_insert(Table table, char** values) {
+    if (table_lookup(table, values) != NULL) return false;
     char* key = table->primary_attribute == -1 ? "*" : values[table->primary_attribute];
-    if (hashtable_get(table->hashtable, key) != NULL) return false;
     hashtable_put(table->hashtable, key, values);
 
     for (int i = 0; i < table->num_attributes; i++) {
@@ -98,6 +98,10 @@ char*** table_lookup(Table table, char** query) {
                 result[j] = row;
                 j++;
             }
+        }
+
+        if (j == 0) {
+            return NULL;
         }
 
         return result;
@@ -137,7 +141,7 @@ void print_spacer(Table table, int i, char* value) {
     if (i != table->num_attributes - 1) printf(" | ");
 }
 
-void table_print(Table table) {
+void print_table(Table table) {
     printf("Table with %d rows:\n", table_size(table));
     for (int i = 0; i < table->num_attributes; i++) {
         printf("%s", table->attributes[i]);

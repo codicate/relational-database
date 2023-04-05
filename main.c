@@ -121,6 +121,8 @@ int main(void) {
 //    Table GHVD = create_GHVD();
 //    Table GPG = create_GPG();
 
-    char*** result = table_lookup(TPN, (char*[]){"Americans", "61367", "99"});
-    print_query_result(TPN, result);
+    print_schema(TPN);
+//    table_print(TPN);
+//    char*** result = table_lookup(TPN, (char*[]){"Americans", "61367", "99"});
+//    print_query_result(TPN, result);
 }
