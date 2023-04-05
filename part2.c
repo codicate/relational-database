@@ -6,6 +6,7 @@
 void query_one(char* name, char* team) {
     Table PNB = create_PNB();
     Table TPN = create_TPN();
+    bool has_answer = false;
     // What Number did Name wear when playing for Team?
     char*** PNBRows = table_lookup(PNB, (char*[]){"*", "*", "*"});
     // (1) for each tuple; t in PNB do
@@ -24,9 +25,14 @@ void query_one(char* name, char* team) {
                 if (strcmp(s[0], team) == 0 && strcmp(s[1], player_id) == 0) {
                     // (6) print the Grade component of tuple s;
                     printf("%s played for %s and wore number %s\n", name, team, s[2]);
+                    has_answer = true;
                 }
             }
         }
+    }
+
+    if (!has_answer) {
+        printf("No result. %s did not play for %s\n", name, team);
     }
 }
 
@@ -34,6 +40,7 @@ void query_two(char* name, char* date) {
     Table PNB = create_PNB();
     Table GPG = create_GPG();
     Table GHVD = create_GHVD();
+    bool has_answer = false;
     // How many goals did Name score on Date?
     char*** PNBRows = table_lookup(PNB, (char*[]){"*", "*", "*"});
     // (1) using the index on Name, find each tuple in the PNB with Name
@@ -59,11 +66,16 @@ void query_two(char* name, char* date) {
                         if (strcmp(r[0], game_id) == 0 && strcmp(r[3], date) == 0) {
                             // (9) print the Goals component of tuple r;
                             printf("%s scored %s goals on %s\n", name, s[2], date);
+                            has_answer = true;
                         }
                     }
                 }
             }
         }
+    }
+
+    if (!has_answer) {
+        printf("No result. %s did not score any goals on %s\n", name, date);
     }
 }
 
