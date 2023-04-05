@@ -34,15 +34,15 @@ void part1(void) {
 }
 
 void query_one(char* name, char* team) {
-    Table PNB = create_PNB();
-    Table TPN = create_TPN();
+//    Table PNB = create_PNB();
+//    Table TPN = create_TPN();
 
 }
 
 void query_two(char* name, char* date) {
-    Table PNB = create_PNB();
-    Table GHVD = create_GHVD();
-    Table GPG = create_GPG();
+//    Table PNB = create_PNB();
+//    Table GHVD = create_GHVD();
+//    Table GPG = create_GPG();
 
 }
 
@@ -50,7 +50,14 @@ void query_repl(char* parameter1, char* parameter2) {
 
 }
 
-int main(void) {
-    part1();
+void part3(void) {
+    printf("Part Three\n");
+    Table TPN = create_TPN();
+    Table result1 = table_select(TPN, 1, (char*[]){"PlayerId", "51213"});
+    print_table(result1);
+}
 
+int main(void) {
+//    part1();
+    part3();
 }

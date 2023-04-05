@@ -36,4 +36,6 @@ void print_table(Table table);
 
 void print_query_results(Table table, char*** results);
 
+Table table_select(Table table, int query_pair_len, char** select_query);
+
 #endif //DATABASE_TABLE_H

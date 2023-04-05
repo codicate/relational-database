@@ -193,3 +193,30 @@ void print_query_results(Table table, char*** result) {
     }
     printf("\n");
 }
+
+Table table_select(Table table, int query_pair_len, char** select_query) {
+    Table result = table_create(hashtable_capacity(table->hashtable), table->num_attributes, table->primary_attribute, table->attributes);
+
+    char** lookup_query = malloc(sizeof(char*) * table->num_attributes);
+    for (int i = 0; i < table->num_attributes; i++) {
+        for (int j = 0; j < query_pair_len; j+=2) {
+            char* attribute = select_query[j];
+            char* value = select_query[j+1];
+
+            if (strcmp(table->attributes[i], attribute) == 0) {
+                lookup_query[i] = malloc(sizeof(char) * (strlen(value) + 1));
+                strcpy(lookup_query[i], value);
+            } else {
+                lookup_query[i] = malloc(sizeof(char) * 2);
+                strcpy(lookup_query[i], "*");
+            }
+        }
+    }
+
+    char*** rows = table_lookup(table, lookup_query);
+    if (rows == NULL) return result;
+
+    for (int i = 0; rows[i] != NULL; i++)
+        table_insert(result, rows[i]);
+    return result;
+}
