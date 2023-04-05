@@ -7,8 +7,8 @@
 struct Hashtable {
     int size;
     int capacity;
-    void** rows;
     char** keys;
+    void** rows;
 };
 
 Hashtable hashtable_create(int capacity) {
@@ -58,6 +58,7 @@ int string_hash(Hashtable hashtable, const char* key) {
 
 int hashtable_put(Hashtable hashtable, char* key, void* values) {
     if (hashtable->size == hashtable->capacity) return -1;
+    if (hashtable_contains(hashtable, key)) return -1;
     int index = string_hash(hashtable, key);
 
     int i = 1;
@@ -86,8 +87,24 @@ void* hashtable_get(Hashtable hashtable, char* key) {
     return NULL;
 }
 
+bool hashtable_contains(Hashtable hashtable, char* key) {
+    return hashtable_get(hashtable, key) != NULL;
+}
+
 void* hashtable_get_by_index(Hashtable hashtable, int index) {
     return hashtable->rows[index];
+}
+
+char** hashtable_keys(Hashtable hashtable) {
+    char** keys = malloc(sizeof(char*) * hashtable->size);
+    int j = 0;
+    for (int i = 0; i < hashtable->capacity; i++) {
+        if (hashtable->keys[i] != NULL) {
+            keys[j] = hashtable->keys[i];
+            j++;
+        }
+    }
+    return keys;
 }
 
 void** hashtable_values(Hashtable hashtable) {
@@ -131,4 +148,20 @@ void hashtable_print(Hashtable hashtable) {
         printf("\n");
     }
     printf("\n");
+}
+
+Hashtable hashtable_union(Hashtable hashtable1, Hashtable hashtable2) {
+    Hashtable union_table = hashtable_create(hashtable1->capacity + hashtable2->capacity);
+
+    for (int i = 0; i < hashtable1->capacity; i++) {
+        if (hashtable1->keys[i] != NULL)
+            hashtable_put(union_table, hashtable1->keys[i], hashtable1->rows[i]);
+    }
+
+    for (int i = 0; i < hashtable2->capacity; i++) {
+        if (hashtable2->keys[i] != NULL)
+            hashtable_put(union_table, hashtable2->keys[i], hashtable2->rows[i]);
+    }
+
+    return union_table;
 }

@@ -17,7 +17,11 @@ int hashtable_put(Hashtable hashtable, char* key, void* values);
 
 void* hashtable_get(Hashtable hashtable, char* key);
 
+bool hashtable_contains(Hashtable hashtable, char* key);
+
 void* hashtable_get_by_index(Hashtable hashtable, int index);
+
+char** hashtable_keys(Hashtable hashtable);
 
 void** hashtable_values(Hashtable hashtable);
 

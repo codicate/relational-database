@@ -38,4 +38,6 @@ void print_query_results(Table table, char*** results);
 
 Table table_select(Table table, int query_pair_len, char** select_query);
 
+Table table_project(Table table, int num_attributes, char** attributes);
+
 #endif //DATABASE_TABLE_H

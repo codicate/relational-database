@@ -53,8 +53,16 @@ void query_repl(char* parameter1, char* parameter2) {
 void part3(void) {
     printf("Part Three\n");
     Table TPN = create_TPN();
+
+    printf("All TPN tuples with player ID equals 51213\n");
     Table result1 = table_select(TPN, 1, (char*[]){"PlayerId", "51213"});
     print_table(result1);
+
+    printf("Teams of players with player ID equals 51213\n");
+    Table result2 = table_project(result1, 1, (char*[]){"Team"});
+    print_table(result2);
+
+
 }
 
 int main(void) {

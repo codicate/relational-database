@@ -7,8 +7,8 @@
 
 struct Table {
     int num_attributes;
-    char** attributes;
     int primary_attribute;
+    char** attributes;
     Hashtable hashtable;
     int* max_column_widths;
 };
@@ -18,6 +18,7 @@ Table table_create(int capacity, int num_attributes, int primary_attribute, char
     table->hashtable = hashtable_create(capacity);
     table->num_attributes = num_attributes;
     table->primary_attribute = primary_attribute;
+
     table->attributes = malloc(sizeof(char*) * num_attributes);
     for (int i = 0; i < num_attributes; i++) {
         table->attributes[i] = malloc(sizeof(char) * (strlen(attributes[i]) + 1));
@@ -126,6 +127,10 @@ char*** table_lookup(Table table, char** query) {
     }
 }
 
+char*** table_values(Table table) {
+    return (char***) hashtable_values(table->hashtable);
+}
+
 bool table_delete(Table table, char** query) {
     if (table->primary_attribute == -1 || strcmp(query[table->primary_attribute], "*") == 0) {
         int size = hashtable_size(table->hashtable);
@@ -160,9 +165,8 @@ void print_table(Table table) {
     }
     printf("\n");
 
-    int size = hashtable_size(table->hashtable);
     char*** rows = (char***) hashtable_values(table->hashtable);
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < table_size(table); i++) {
         char** row = rows[i];
         for (int j = 0; j < table->num_attributes; j++) {
             printf("%s", row[j]);
@@ -220,3 +224,49 @@ Table table_select(Table table, int query_pair_len, char** select_query) {
         table_insert(result, rows[i]);
     return result;
 }
+
+Table table_project(Table table, int num_attributes, char** attributes) {
+    char*** rows = table_values(table);
+    if (rows == NULL) return NULL;
+
+    int valid_attributes = 0;
+    int* attribute_index = malloc(sizeof(int) * num_attributes);
+    for (int i = 0; i < num_attributes; i++) {
+        for (int j = 0; j < table->num_attributes; j++) {
+            if (strcmp(attributes[i], table->attributes[j]) == 0) {
+                attribute_index[valid_attributes] = j;
+                valid_attributes++;
+            }
+        }
+    }
+
+    if (valid_attributes == 0) return NULL;
+    Table result = table_create(hashtable_capacity(table->hashtable), num_attributes, -1, attributes);
+
+    for (int i = 0; i < table_size(table); i++) {
+        char** row = malloc(sizeof(char*) * valid_attributes);
+
+        for (int j = 0; j < valid_attributes; j++) {
+            row[j] = malloc(sizeof(char) * (strlen(rows[i][attribute_index[j]]) + 1));
+            strcpy(row[j], rows[i][attribute_index[j]]);
+        }
+
+        table_insert(result, row);
+    }
+    return result;
+}
+
+//Table table_natural_join(Table left, Table right) {
+//    int shared_attribute_index = 0;
+//    char** attributes = malloc(sizeof(char*) * (left->num_attributes + right->num_attributes));
+//
+//    for (int i = 0; i < left->num_attributes; i++) {
+//        for (int j = 0; j < right->num_attributes; j++) {
+//            if (strcmp(left->attributes[i], right->attributes[j]) == 0) {
+//                attributes[i] = malloc(sizeof(char) * (strlen(left->attributes[i]) + 1));
+//                strcpy(attributes[i], left->attributes[i]);
+//                shared_attribute_index = i;
+//            }
+//        }
+//    }
+//}
