@@ -19,6 +19,11 @@ Hashtable hashtable_create(int capacity) {
     hashtable->keys = malloc(sizeof(char*) * capacity);
     hashtable->rows = malloc(sizeof(void*) * capacity);
 
+    for (int i = 0; i < capacity; i++) {
+        hashtable->keys[i] = NULL;
+        hashtable->rows[i] = NULL;
+    }
+
     return hashtable;
 }
 
@@ -41,16 +46,19 @@ int hashtable_capacity(Hashtable hashtable) {
     return hashtable->capacity;
 }
 
-int string_hash(const char* key, int total_rows) {
+int string_hash(Hashtable hashtable, const char* key) {
+    if (strcmp(key, "*") == 0)
+        return hashtable->size;
+
     int hash = 0;
     for (int i = 0; key[i] != '\0'; i++)
         hash += key[i];
-    return hash % total_rows;
+    return hash % hashtable->capacity;
 }
 
 int hashtable_put(Hashtable hashtable, char* key, void* values) {
     if (hashtable->size == hashtable->capacity) return -1;
-    int index = string_hash(key, hashtable->capacity);
+    int index = string_hash(hashtable, key);
 
     int i = 1;
     while (hashtable->keys[index] != NULL) {
@@ -65,7 +73,7 @@ int hashtable_put(Hashtable hashtable, char* key, void* values) {
 }
 
 void* hashtable_get(Hashtable hashtable, char* key) {
-    int index = string_hash(key, hashtable->capacity);
+    int index = string_hash(hashtable, key);
 
     int i = 1;
     while (hashtable->keys[index] != NULL) {
@@ -95,7 +103,7 @@ void** hashtable_values(Hashtable hashtable) {
 }
 
 bool hashtable_remove(Hashtable hashtable, char* key) {
-    int index = string_hash(key, hashtable->capacity);
+    int index = string_hash(hashtable, key);
 
     int i = 1;
     while (hashtable->keys[index] != NULL) {

@@ -63,7 +63,7 @@ void print_schema(Table table) {
 }
 
 bool table_insert(Table table, char** values) {
-    char* key = values[table->primary_attribute];
+    char* key = table->primary_attribute == -1 ? "*" : values[table->primary_attribute];
     if (hashtable_get(table->hashtable, key) != NULL) return false;
     hashtable_put(table->hashtable, key, values);
 
