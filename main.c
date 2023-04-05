@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "table.h"
 #include "database.h"
+#include "part2.h"
 
 void part1(void) {
     printf("Part One\n");
@@ -33,21 +34,9 @@ void part1(void) {
     print_table(TC);
 }
 
-void query_one(char* name, char* team) {
-//    Table PNB = create_PNB();
-//    Table TPN = create_TPN();
-
-}
-
-void query_two(char* name, char* date) {
-//    Table PNB = create_PNB();
-//    Table GHVD = create_GHVD();
-//    Table GPG = create_GPG();
-
-}
-
-void query_repl(char* parameter1, char* parameter2) {
-
+void part2(void) {
+    query_one_repl();
+    query_two_repl();
 }
 
 void part3(void) {
@@ -76,5 +65,6 @@ void part3(void) {
 
 int main(void) {
 //    part1();
-    part3();
+//    part2();
+//    part3();
 }
