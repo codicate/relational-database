@@ -1,6 +1,8 @@
 #ifndef DATABASE_HASHTABLE_H
 #define DATABASE_HASHTABLE_H
 
+#include <stdbool.h>
+
 typedef struct Hashtable* Hashtable;
 
 Hashtable hashtable_create(int capacity);
@@ -19,7 +21,7 @@ void* hashtable_get_by_index(Hashtable hashtable, int index);
 
 void** hashtable_values(Hashtable hashtable);
 
-int hashtable_remove(Hashtable hashtable, char* key);
+bool hashtable_remove(Hashtable hashtable, char* key);
 
 void hashtable_print(Hashtable hashtable);
 

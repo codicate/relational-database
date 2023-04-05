@@ -30,6 +30,8 @@ bool table_insert(Table table, char** values);
 
 char*** table_lookup(Table table, char** values);
 
+bool table_delete(Table table, char** query);
+
 void table_print(Table table);
 
 #endif //DATABASE_TABLE_H

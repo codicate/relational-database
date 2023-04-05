@@ -111,6 +111,26 @@ char*** table_lookup(Table table, char** query) {
     }
 }
 
+bool table_delete(Table table, char** query) {
+    if (table->primary_attribute == -1 || strcmp(query[table->primary_attribute], "*") == 0) {
+        int size = hashtable_size(table->hashtable);
+        char*** rows = (char***) hashtable_values(table->hashtable);
+
+        bool found = false;
+        for (int i = 0; i < size; i++) {
+            char** row = rows[i];
+            if (query_row(row, query, table->num_attributes) != NULL) {
+                found = hashtable_remove(table->hashtable, row[table->primary_attribute]);
+            }
+        }
+
+        return found;
+    } else {
+        char* key = query[table->primary_attribute];
+        return hashtable_remove(table->hashtable, key);
+    }
+}
+
 void print_spacer(Table table, int i, char* value) {
     for (int j = 0; j < table->max_column_widths[i] - strlen(value); j++)
         printf(" ");
@@ -118,7 +138,7 @@ void print_spacer(Table table, int i, char* value) {
 }
 
 void table_print(Table table) {
-    printf("Table contents:\n");
+    printf("Table with %d rows:\n", table_size(table));
     for (int i = 0; i < table->num_attributes; i++) {
         printf("%s", table->attributes[i]);
         print_spacer(table, i, table->attributes[i]);

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 struct Hashtable {
     int size;
@@ -93,7 +94,7 @@ void** hashtable_values(Hashtable hashtable) {
     return values;
 }
 
-int hashtable_remove(Hashtable hashtable, char* key) {
+bool hashtable_remove(Hashtable hashtable, char* key) {
     int index = string_hash(key, hashtable->capacity);
 
     int i = 1;
@@ -102,13 +103,13 @@ int hashtable_remove(Hashtable hashtable, char* key) {
             hashtable->keys[index] = NULL;
             hashtable->rows[index] = NULL;
             hashtable->size--;
-            return index;
+            return true;
         }
         index = (index + i * i) % hashtable->capacity;
         i++;
     }
 
-    return -1;
+    return false;
 }
 
 void hashtable_print(Hashtable hashtable) {
