@@ -268,12 +268,18 @@ Table table_natural_join(Table left, Table right) {
     Hashtable common_attributes = hashtable_intersection(left_attributes, right_attributes);
     if (hashtable_size(common_attributes) == 0) return NULL;
 
-    Hashtable different_attributes = hashtable_difference(right_attributes, left_attributes);
-    Hashtable new_attributes = hashtable_union(common_attributes, different_attributes);
+    Hashtable right_unique_attributes = hashtable_difference(right_attributes, common_attributes);
+    int new_attributes_len = hashtable_size(left_attributes) + hashtable_size(right_unique_attributes);
+    char** new_attributes = malloc(sizeof(char*) * new_attributes_len);
+    for (int i = 0; i < hashtable_size(left_attributes); i++)
+        new_attributes[i] = left->attributes[i];
+    for (int i = 0; i < hashtable_size(right_unique_attributes); i++)
+        new_attributes[hashtable_size(left_attributes) + i] = hashtable_keys(right_unique_attributes)[i];
 
-    Table result = table_create(hashtable_capacity(left->hashtable) * hashtable_capacity(right->hashtable), hashtable_size(new_attributes), -1, hashtable_keys(new_attributes));
-
+    Table result = table_create(hashtable_capacity(left->hashtable) * hashtable_capacity(right->hashtable), new_attributes_len, -1, new_attributes);
     Table lookup_table = table_project(left, hashtable_size(common_attributes), hashtable_keys(common_attributes));
+    char*** left_rows = table_values(left);
+
     char*** lookup_values = table_values(lookup_table);
     for (int i = 0; i < table_size(left); i++) {
         char** lookup_row = lookup_values[i];
@@ -287,24 +293,26 @@ Table table_natural_join(Table left, Table right) {
         Table query_result = table_select(right, hashtable_size(common_attributes) * 2, query);
         if (query_result == NULL) continue;
 
-        Table projected_result = table_project(query_result, hashtable_size(different_attributes), hashtable_keys(different_attributes));
+        Table projected_result = table_project(query_result, hashtable_size(right_unique_attributes), hashtable_keys(right_unique_attributes));
         char*** projected_values = table_values(projected_result);
 
         for (int j = 0; j < table_size(projected_result); j++) {
             char** projected_row = projected_values[j];
-            char** new_row = malloc(sizeof(char*) * hashtable_size(new_attributes));
+            char** new_row = malloc(sizeof(char*) * new_attributes_len);
 
             int k = 0;
-            while (k < hashtable_size(common_attributes)) {
-                new_row[k] = malloc(sizeof(char) * (strlen(lookup_row[k]) + 1));
-                strcpy(new_row[k], lookup_row[k]);
+            while (k < hashtable_size(left_attributes)) {
+                new_row[k] = malloc(sizeof(char) * (strlen(left_rows[i][k]) + 1));
+                strcpy(new_row[k], left_rows[i][k]);
                 k++;
             }
 
-            while (k < hashtable_size(common_attributes) + hashtable_size(different_attributes)) {
-                new_row[k] = malloc(sizeof(char) * (strlen(projected_row[k]) + 1));
-                strcpy(new_row[k], projected_row[k]);
+            int l = 0;
+            while (l < hashtable_size(right_unique_attributes)) {
+                new_row[k] = malloc(sizeof(char) * (strlen(projected_row[l]) + 1));
+                strcpy(new_row[k], projected_row[l]);
                 k++;
+                l++;
             }
 
             table_insert(result, new_row);

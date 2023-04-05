@@ -194,3 +194,19 @@ Hashtable hashtable_difference(Hashtable left, Hashtable right) {
 
     return difference_table;
 }
+
+Hashtable hashtable_symmetric_difference(Hashtable left, Hashtable right) {
+    Hashtable symmetric_difference_table = hashtable_create(left->capacity + right->capacity);
+
+    for (int i = 0; i < left->capacity; i++) {
+        if (left->keys[i] != NULL && !hashtable_contains(right, left->keys[i]))
+            hashtable_put(symmetric_difference_table, left->keys[i], left->rows[i]);
+    }
+
+    for (int i = 0; i < right->capacity; i++) {
+        if (right->keys[i] != NULL && !hashtable_contains(left, right->keys[i]))
+            hashtable_put(symmetric_difference_table, right->keys[i], right->rows[i]);
+    }
+
+    return symmetric_difference_table;
+}

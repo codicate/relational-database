@@ -67,6 +67,11 @@ void part3(void) {
     Table GPG = create_GPG();
     Table result3 = table_natural_join(GHVD, GPG);
     print_table(result3);
+
+    printf("The player ID and goals of all games on 8 Jan 2023:\n");
+    Table result4 = table_select(result3, 1, (char*[]){"Date", "8 Jan 2023"});
+    Table result5 = table_project(result4, 2, (char*[]){"PlayerId", "Goals"});
+    print_table(result5);
 }
 
 int main(void) {

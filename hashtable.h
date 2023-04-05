@@ -35,4 +35,6 @@ Hashtable hashtable_intersection(Hashtable left, Hashtable right);
 
 Hashtable hashtable_difference(Hashtable left, Hashtable right);
 
+Hashtable hashtable_symmetric_difference(Hashtable left, Hashtable right);
+
 #endif //DATABASE_HASHTABLE_H
