@@ -18,7 +18,11 @@ Table table_create(int capacity, int num_attributes, int primary_attribute, char
     table->hashtable = hashtable_create(capacity);
     table->num_attributes = num_attributes;
     table->primary_attribute = primary_attribute;
-    table->attributes = attributes;
+    table->attributes = malloc(sizeof(char*) * num_attributes);
+    for (int i = 0; i < num_attributes; i++) {
+        table->attributes[i] = malloc(sizeof(char) * (strlen(attributes[i]) + 1));
+        strcpy(table->attributes[i], attributes[i]);
+    }
 
     table->max_column_widths = malloc(sizeof(int) * num_attributes);
     for (int i = 0; i < num_attributes; i++)
@@ -65,7 +69,14 @@ void print_schema(Table table) {
 bool table_insert(Table table, char** values) {
     if (table_lookup(table, values) != NULL) return false;
     char* key = table->primary_attribute == -1 ? "*" : values[table->primary_attribute];
-    hashtable_put(table->hashtable, key, values);
+
+    char** values_copy = malloc(sizeof(char*) * table->num_attributes);
+    for (int i = 0; i < table->num_attributes; i++) {
+        values_copy[i] = malloc(sizeof(char) * (strlen(values[i]) + 1));
+        strcpy(values_copy[i], values[i]);
+    }
+
+    hashtable_put(table->hashtable, key, values_copy);
 
     for (int i = 0; i < table->num_attributes; i++) {
         int len = strlen(values[i]);
