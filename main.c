@@ -65,6 +65,6 @@ void part3(void) {
 
 int main(void) {
 //    part1();
-//    part2();
+    part2();
 //    part3();
 }

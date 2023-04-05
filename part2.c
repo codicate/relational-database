@@ -86,10 +86,11 @@ void query_one_repl(void) {
         printf("\nContinue? (y/n):");
         fgets(c, 2, stdin);
         c[strcspn(c, "\r\n")] = 0;
-        fflush(stdin);
         if (strcmp(c, "n") == 0) {
+            fflush(stdin);
             break;
         }
+        fflush(stdin);
     }
 }
 
@@ -112,9 +113,10 @@ void query_two_repl(void) {
         printf("\nContinue? (y/n):");
         fgets(c, 2, stdin);
         c[strcspn(c, "\r\n")] = 0;
-        fflush(stdin);
         if (strcmp(c, "n") == 0) {
+            fflush(stdin);
             break;
         }
+        fflush(stdin);
     }
 }
