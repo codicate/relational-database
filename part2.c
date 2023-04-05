@@ -70,7 +70,7 @@ void query_two(char* name, char* date) {
 void query_one_repl(void) {
     char name[20];
     char team[20];
-    char c[2];
+    char c[5];
 
     printf("\nQuery One: What Number did Name wear when playing for Team?\n");
     // Run in a loop and ask if the user wants to continue or stop
@@ -78,26 +78,25 @@ void query_one_repl(void) {
     while (1) {
         printf("Enter a name:");
         fgets(name, 20, stdin);
-        name[strcspn(name, "\r\n")] = 0;
+        name[strcspn(name, "\n")] = 0;
         printf("Enter a team:");
         fgets(team, 20, stdin);
-        team[strcspn(team, "\r\n")] = 0;
+        team[strcspn(team, "\n")] = 0;
         query_one(name, team);
         printf("\nContinue? (y/n):");
-        fgets(c, 2, stdin);
-        c[strcspn(c, "\r\n")] = 0;
+        fgets(c, 5, stdin);
+        c[strcspn(c, "\n")] = 0;
+        fflush(stdin);
         if (strcmp(c, "n") == 0) {
-            fflush(stdin);
             break;
         }
-        fflush(stdin);
     }
 }
 
 void query_two_repl(void) {
     char name[20];
     char date[20];
-    char c[2];
+    char c[5];
 
     printf("\nQuery Two: How many goals did Name score on Date?\n");
     // Run in a loop and ask if the user wants to continue or stop
@@ -105,18 +104,17 @@ void query_two_repl(void) {
     while (1) {
         printf("Enter a name:");
         fgets(name, 20, stdin);
-        name[strcspn(name, "\r\n")] = 0;
+        name[strcspn(name, "\n")] = 0;
         printf("Enter a date:");
         fgets(date, 20, stdin);
-        date[strcspn(date, "\r\n")] = 0;
+        date[strcspn(date, "\n")] = 0;
         query_two(name, date);
         printf("\nContinue? (y/n):");
-        fgets(c, 2, stdin);
-        c[strcspn(c, "\r\n")] = 0;
+        fgets(c, 5, stdin);
+        c[strcspn(c, "\n")] = 0;
+        fflush(stdin);
         if (strcmp(c, "n") == 0) {
-            fflush(stdin);
             break;
         }
-        fflush(stdin);
     }
 }

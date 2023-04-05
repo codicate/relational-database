@@ -13,7 +13,7 @@ cd "/mnt/c/Users/codicate/OneDrive/Desktop/school/CSC 173/relational-database"
 
 Building the project:
 
-gcc -std=c99 -pedantic -Wall -Werror -o bits *.c
+gcc -std=c99 -pedantic -Wall -Werror -o database *.c
 
 Running the project:
 
