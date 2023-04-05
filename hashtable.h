@@ -29,4 +29,10 @@ bool hashtable_remove(Hashtable hashtable, char* key);
 
 void hashtable_print(Hashtable hashtable);
 
+Hashtable hashtable_union(Hashtable left, Hashtable right);
+
+Hashtable hashtable_intersection(Hashtable left, Hashtable right);
+
+Hashtable hashtable_difference(Hashtable left, Hashtable right);
+
 #endif //DATABASE_HASHTABLE_H

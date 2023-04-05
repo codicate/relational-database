@@ -54,15 +54,19 @@ void part3(void) {
     printf("Part Three\n");
     Table TPN = create_TPN();
 
-    printf("All TPN tuples with player ID equals 51213\n");
+    printf("All TPN tuples with player ID equals 51213:\n");
     Table result1 = table_select(TPN, 1, (char*[]){"PlayerId", "51213"});
     print_table(result1);
 
-    printf("Teams of players with player ID equals 51213\n");
+    printf("Teams of players with player ID equals 51213:\n");
     Table result2 = table_project(result1, 1, (char*[]){"Team"});
     print_table(result2);
 
-
+    printf("A table of Games in GHVD that also have a player id and goals in GPG:\n");
+    Table GHVD = create_GHVD();
+    Table GPG = create_GPG();
+    Table result3 = table_natural_join(GHVD, GPG);
+    print_table(result3);
 }
 
 int main(void) {

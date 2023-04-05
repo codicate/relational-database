@@ -40,4 +40,6 @@ Table table_select(Table table, int query_pair_len, char** select_query);
 
 Table table_project(Table table, int num_attributes, char** attributes);
 
+Table table_natural_join(Table left, Table right);
+
 #endif //DATABASE_TABLE_H

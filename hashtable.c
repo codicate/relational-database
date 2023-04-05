@@ -76,8 +76,15 @@ int hashtable_put(Hashtable hashtable, char* key, void* values) {
 void* hashtable_get(Hashtable hashtable, char* key) {
     int index = string_hash(hashtable, key);
 
+    if (index < 0) {
+        printf("index < 0\n");
+    }
+
     int i = 1;
     while (hashtable->keys[index] != NULL) {
+        if (index == -1) {
+            return NULL;
+        }
         if (strcmp(hashtable->keys[index], key) == 0)
             return hashtable->rows[index];
         index = (index + i * i) % hashtable->capacity;
@@ -150,18 +157,40 @@ void hashtable_print(Hashtable hashtable) {
     printf("\n");
 }
 
-Hashtable hashtable_union(Hashtable hashtable1, Hashtable hashtable2) {
-    Hashtable union_table = hashtable_create(hashtable1->capacity + hashtable2->capacity);
+Hashtable hashtable_union(Hashtable left, Hashtable right) {
+    Hashtable union_table = hashtable_create(left->capacity + right->capacity);
 
-    for (int i = 0; i < hashtable1->capacity; i++) {
-        if (hashtable1->keys[i] != NULL)
-            hashtable_put(union_table, hashtable1->keys[i], hashtable1->rows[i]);
+    for (int i = 0; i < left->capacity; i++) {
+        if (left->keys[i] != NULL)
+            hashtable_put(union_table, left->keys[i], left->rows[i]);
     }
 
-    for (int i = 0; i < hashtable2->capacity; i++) {
-        if (hashtable2->keys[i] != NULL)
-            hashtable_put(union_table, hashtable2->keys[i], hashtable2->rows[i]);
+    for (int i = 0; i < right->capacity; i++) {
+        if (right->keys[i] != NULL)
+            hashtable_put(union_table, right->keys[i], right->rows[i]);
     }
 
     return union_table;
+}
+
+Hashtable hashtable_intersection(Hashtable left, Hashtable right) {
+    Hashtable intersection_table = hashtable_create(left->capacity + right->capacity);
+
+    for (int i = 0; i < left->capacity; i++) {
+        if (left->keys[i] != NULL && hashtable_contains(right, left->keys[i]))
+            hashtable_put(intersection_table, left->keys[i], left->rows[i]);
+    }
+
+    return intersection_table;
+}
+
+Hashtable hashtable_difference(Hashtable left, Hashtable right) {
+    Hashtable difference_table = hashtable_create(left->capacity + right->capacity);
+
+    for (int i = 0; i < left->capacity; i++) {
+        if (left->keys[i] != NULL && !hashtable_contains(right, left->keys[i]))
+            hashtable_put(difference_table, left->keys[i], left->rows[i]);
+    }
+
+    return difference_table;
 }
