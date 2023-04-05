@@ -117,11 +117,31 @@ int main(void) {
 
 //    Table PNB = create_PNB();
     Table TPN = create_TPN();
-//    Table TC = create_TC();
-//    Table GHVD = create_GHVD();
+    Table TC = create_TC();
+    Table GHVD = create_GHVD();
 //    Table GPG = create_GPG();
 
-    print_table(TPN);
-    char*** result = table_lookup(TPN, (char*[]){"Americans", "61367", "99"});
-    print_query_result(TPN, result);
+    char*** result1 = table_lookup(TPN, (char*[]){"Americans", "61367", "99"});
+    print_query_result(TPN, result1);
+
+    char*** result2 = table_lookup(TPN, (char*[]){"Crunch", "51213", "*"});
+    print_query_result(TPN, result2);
+
+    char*** result3 = table_lookup(TC, (char*[]){"Americans", "Toronto"});
+    print_query_result(TC, result3);
+
+    table_delete(GHVD, (char*[]){"4", "Redwings", "Maple Leafs", "6 Jan 2023"});
+    print_table(GHVD);
+
+    table_delete(GHVD, (char*[]){"*", "Redwings", "Crunch", "*"});
+    print_table(GHVD);
+
+    table_delete(GHVD, (char*[]){"*", "Americans", "*", "*"});
+    print_table(GHVD);
+
+    table_insert(TC, (char*[]){"Ice Pilots", "Pensacola"});
+    print_table(TC);
+
+    table_insert(TC, (char*[]){"Crunch", "Syracuse"});
+    print_table(TC);
 }
