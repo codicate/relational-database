@@ -34,4 +34,6 @@ bool table_delete(Table table, char** query);
 
 void print_table(Table table);
 
+void print_query_results(Table table, char*** results);
+
 #endif //DATABASE_TABLE_H

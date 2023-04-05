@@ -6,4 +6,4 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 add_compile_options(-Wall -Werror -pedantic)
 
-add_executable(database main.c table.c hashtable.c hashtable.h)
+add_executable(database main.c table.c hashtable.c database.c)

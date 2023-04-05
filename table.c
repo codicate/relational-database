@@ -56,7 +56,7 @@ int table_num_attributes(Table table) {
 }
 
 void print_schema(Table table) {
-//    printf("Table schema:\n");
+    printf("Table schema:\n");
     for (int i = 0; i < table->num_attributes; i++) {
         printf("%s", table->attributes[i]);
         if (i == table->primary_attribute)
@@ -167,6 +167,27 @@ void print_table(Table table) {
         for (int j = 0; j < table->num_attributes; j++) {
             printf("%s", row[j]);
             print_spacer(table, j, row[j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+void print_query_results(Table table, char*** result) {
+    printf("Query result:\n");
+
+    if (result == NULL || result[0] == NULL) {
+        printf("No results found.\n");
+        printf("\n");
+        return;
+    }
+
+    int num_columns = table_num_attributes(table);
+    for (int i = 0; result[i] != NULL; i++) {
+        for (int j = 0; j < num_columns; j++) {
+            printf("%s", result[i][j]);
+            if (j < num_columns - 1)
+                printf(", ");
         }
         printf("\n");
     }
