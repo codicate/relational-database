@@ -11,6 +11,12 @@ struct Hashtable {
     void** rows;
 };
 
+/*
+ * This is a simple fixed capacity hash table implementation with quadratic probing.
+ * Keys are strings and values are void pointers for any data type
+ * The hash function is a simple sum of the ASCII values of the characters
+ * The hash table supports union, intersection, difference, and symmetric difference
+ */
 Hashtable hashtable_create(int capacity) {
     Hashtable hashtable = malloc(sizeof(struct Hashtable));
 
@@ -47,9 +53,11 @@ int hashtable_capacity(Hashtable hashtable) {
 }
 
 int string_hash(Hashtable hashtable, const char* key) {
+    // special case for wildcare
     if (strcmp(key, "*") == 0)
         return hashtable->size;
 
+    // hash function is simply the sum of the ASCII values mod by capacity
     int hash = 0;
     for (int i = 0; key[i] != '\0'; i++)
         hash += key[i];
@@ -57,12 +65,14 @@ int string_hash(Hashtable hashtable, const char* key) {
 }
 
 int hashtable_put(Hashtable hashtable, char* key, void* values) {
+    // if hashtable is full, or if such key already exists, return -1
     if (hashtable->size == hashtable->capacity) return -1;
     if (hashtable_contains(hashtable, key)) return -1;
     int index = string_hash(hashtable, key);
 
     int i = 1;
     while (hashtable->keys[index] != NULL) {
+        // if the hashed index is already occupied, use quadratic probing
         index = (index + i * i) % hashtable->capacity;
         i++;
     }
@@ -76,15 +86,9 @@ int hashtable_put(Hashtable hashtable, char* key, void* values) {
 void* hashtable_get(Hashtable hashtable, char* key) {
     int index = string_hash(hashtable, key);
 
-    if (index < 0) {
-        printf("index < 0\n");
-    }
-
     int i = 1;
     while (hashtable->keys[index] != NULL) {
-        if (index == -1) {
-            return NULL;
-        }
+        // if the hashed index is a different key, use quadratic probing
         if (strcmp(hashtable->keys[index], key) == 0)
             return hashtable->rows[index];
         index = (index + i * i) % hashtable->capacity;
@@ -96,10 +100,6 @@ void* hashtable_get(Hashtable hashtable, char* key) {
 
 bool hashtable_contains(Hashtable hashtable, char* key) {
     return hashtable_get(hashtable, key) != NULL;
-}
-
-void* hashtable_get_by_index(Hashtable hashtable, int index) {
-    return hashtable->rows[index];
 }
 
 char** hashtable_keys(Hashtable hashtable) {
@@ -137,6 +137,8 @@ bool hashtable_remove(Hashtable hashtable, char* key) {
             hashtable->size--;
             return true;
         }
+
+        // if the hashed index is a different key, use quadratic probing
         index = (index + i * i) % hashtable->capacity;
         i++;
     }
