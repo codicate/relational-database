@@ -41,7 +41,17 @@ char** query_row(char** row, char** query, int num_attributes) {
 
 char*** table_lookup(Table table, char** query, bool print) {
     char*** result = malloc(sizeof(char**) * hashtable_size(table->hashtable));
-    int result_len = 0;
+    int result_len;
+
+    if (print) {
+        printf("Query: ");
+        for (int i = 0; i < table->num_attributes; i++) {
+            printf("%s", query[i]);
+            if (i < table->num_attributes - 1)
+                printf(", ");
+        }
+        printf("}\n");
+    }
 
     // if either there's no primary attribute, or primary attribute is a wild card, loop through all the rows
     if (table->primary_attribute == -1 || strcmp(query[table->primary_attribute], "*") == 0) {
@@ -67,7 +77,7 @@ char*** table_lookup(Table table, char** query, bool print) {
     } else {
         char* key = query[table->primary_attribute];
         char** row = (char **) hashtable_get(table->hashtable, key);
-        if (row == NULL) {
+        if (row == NULL || query_row(row, query, table->num_attributes) == NULL) {
             if(print) printf("No results found.\n\n");
             return NULL;
         }
@@ -77,14 +87,6 @@ char*** table_lookup(Table table, char** query, bool print) {
     }
 
     if (print) {
-        printf("Querying: {");
-        for (int i = 0; i < table->num_attributes; i++) {
-            printf("%s", query[i]);
-            if (i < table->num_attributes - 1)
-                printf(", ");
-        }
-        printf("}\n");
-
         int num_columns = table_num_attributes(table);
         for (int i = 0; i < result_len; i++) {
             for (int j = 0; j < num_columns; j++) {
