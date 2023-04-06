@@ -3,6 +3,8 @@
 #include "table.h"
 #include "database.h"
 
+#define MAX_LINE_LENGTH 100
+
 void query_one(char* name, char* team) {
     Table PNB = create_PNB();
     Table TPN = create_TPN();
@@ -80,23 +82,23 @@ void query_two(char* name, char* date) {
 }
 
 void query_one_repl(void) {
-    char name[20];
-    char team[20];
-    char c[5];
+    char name[MAX_LINE_LENGTH];
+    char team[MAX_LINE_LENGTH];
+    char c[MAX_LINE_LENGTH];
 
     printf("\nQuery One: What Number did Name wear when playing for Team?\n");
     // Run in a loop and ask if the user wants to continue or stop
     // ask the user for name and team using fgets (remove the newline)
     while (1) {
         printf("Enter a name:");
-        fgets(name, 20, stdin);
+        fgets(name, MAX_LINE_LENGTH, stdin);
         name[strcspn(name, "\n")] = 0;
         printf("Enter a team:");
-        fgets(team, 20, stdin);
+        fgets(team, MAX_LINE_LENGTH, stdin);
         team[strcspn(team, "\n")] = 0;
         query_one(name, team);
         printf("\nContinue? (y/n):");
-        fgets(c, 5, stdin);
+        fgets(c, MAX_LINE_LENGTH, stdin);
         c[strcspn(c, "\n")] = 0;
         fflush(stdin);
         if (strcmp(c, "n") == 0) {
@@ -106,23 +108,23 @@ void query_one_repl(void) {
 }
 
 void query_two_repl(void) {
-    char name[20];
-    char date[20];
-    char c[5];
+    char name[MAX_LINE_LENGTH];
+    char date[MAX_LINE_LENGTH];
+    char c[MAX_LINE_LENGTH];
 
     printf("\nQuery Two: How many goals did Name score on Date?\n");
     // Run in a loop and ask if the user wants to continue or stop
     // ask the user for name and date using fgets (remove the newline)
     while (1) {
         printf("Enter a name:");
-        fgets(name, 20, stdin);
+        fgets(name, MAX_LINE_LENGTH, stdin);
         name[strcspn(name, "\n")] = 0;
         printf("Enter a date:");
-        fgets(date, 20, stdin);
+        fgets(date, MAX_LINE_LENGTH, stdin);
         date[strcspn(date, "\n")] = 0;
         query_two(name, date);
         printf("\nContinue? (y/n):");
-        fgets(c, 5, stdin);
+        fgets(c, MAX_LINE_LENGTH, stdin);
         c[strcspn(c, "\n")] = 0;
         fflush(stdin);
         if (strcmp(c, "n") == 0) {
