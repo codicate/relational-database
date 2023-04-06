@@ -7,9 +7,9 @@ hliu68@u.rochester.edu
 Suchith Hegde
 shegde@u.rochester.edu
 
-For myself:
+    For myself:
 
-cd "/mnt/c/Users/codicate/OneDrive/Desktop/school/CSC 173/relational-database"
+    cd "/mnt/c/Users/codicate/OneDrive/Desktop/school/CSC 173/relational-database"
 
 Building the project:
 

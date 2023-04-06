@@ -88,6 +88,8 @@ void* hashtable_get(Hashtable hashtable, char* key) {
 
     int i = 1;
     while (hashtable->keys[index] != NULL) {
+        if (index == -1) return NULL;
+
         // if the hashed index is a different key, use quadratic probing
         if (strcmp(hashtable->keys[index], key) == 0)
             return hashtable->rows[index];
