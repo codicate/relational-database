@@ -39,11 +39,9 @@ void print_schema(Table table);
 
 void print_table(Table table);
 
-void print_query_results(Table table, char*** results);
-
 bool table_insert(Table table, char** values);
 
-char*** table_lookup(Table table, char** values);
+char*** table_lookup(Table table, char** values, bool print);
 
 bool table_delete(Table table, char** query);
 

@@ -8,7 +8,7 @@ void query_one(char* name, char* team) {
     Table TPN = create_TPN();
     bool has_answer = false;
     // What Number did Name wear when playing for Team?
-    char*** PNBRows = table_lookup(PNB, (char*[]){"*", "*", "*"});
+    char*** PNBRows = table_lookup(PNB, (char*[]){"*", "*", "*"}, false);
     // (1) for each tuple; t in PNB do
     for (int i = 0; i < table_size(PNB); i++) {
         // look through the PNBRows
@@ -18,7 +18,7 @@ void query_one(char* name, char* team) {
             // (3) let i be the PlayerId component of tuple t;
             char *player_id = t[0];
             // (4) for each tuple s in TPN do
-            char*** TPNRows = table_lookup(TPN, (char*[]){"*", "*", "*"});
+            char*** TPNRows = table_lookup(TPN, (char*[]){"*", "*", "*"}, false);
             for (int j = 0; j < table_size(TPN); j++) {
                 char** s = (char **) TPNRows[j];
                 // (5) if s has team component and PlayerId component i then
@@ -42,7 +42,7 @@ void query_two(char* name, char* date) {
     Table GHVD = create_GHVD();
     bool has_answer = false;
     // How many goals did Name score on Date?
-    char*** PNBRows = table_lookup(PNB, (char*[]){"*", "*", "*"});
+    char*** PNBRows = table_lookup(PNB, (char*[]){"*", "*", "*"}, false);
     // (1) using the index on Name, find each tuple in the PNB with Name
     for (int i = 0; i < table_size(PNB); i++) {
         char** t = (char **) PNBRows[i];
@@ -51,7 +51,7 @@ void query_two(char* name, char* date) {
             // (3) let i be the PlayerId component of tuple t;
             char *player_id = t[0];
             // (4) for each tuple s in GPG do
-            char*** GPGRows = table_lookup(GPG, (char*[]){"*", "*", "*"});
+            char*** GPGRows = table_lookup(GPG, (char*[]){"*", "*", "*"}, false);
             for (int j = 0; j < table_size(GPG); j++) {
                 char** s = (char **) GPGRows[j];
                 // (5) if s has PlayerId component i then
@@ -59,7 +59,7 @@ void query_two(char* name, char* date) {
                     // (6) let i be the GameId component of tuple s;
                     char *game_id = s[0];
                     // (7) for each tuple r in GHVD do
-                    char*** GHVDRows = table_lookup(GHVD, (char*[]){"*", "*", "*", "*"});
+                    char*** GHVDRows = table_lookup(GHVD, (char*[]){"*", "*", "*", "*"}, false);
                     for (int k = 0; k < table_size(GHVD); k++) {
                         char** r = (char **) GHVDRows[k];
                         // (8) if r has GameId component i and Date component Date then

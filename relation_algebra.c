@@ -25,7 +25,7 @@ Table table_select(Table table, int query_pair_len, char** select_query) {
     }
 
     // Lookup the rows that match the lookup query return a table with these rows
-    char*** rows = table_lookup(table, lookup_query);
+    char*** rows = table_lookup(table, lookup_query, false);
     if (rows == NULL) return result;
 
     for (int i = 0; rows[i] != NULL; i++)

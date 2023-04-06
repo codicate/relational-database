@@ -9,14 +9,11 @@ void part1(void) {
     Table TC = create_TC();
     Table GHVD = create_GHVD();
 
-    char*** result1 = table_lookup(TPN, (char*[]){"Americans", "61367", "99"});
-    print_query_results(TPN, result1);
+    table_lookup(TPN, (char*[]){"Americans", "61367", "99"}, true);
 
-    char*** result2 = table_lookup(TPN, (char*[]){"Crunch", "51213", "*"});
-    print_query_results(TPN, result2);
+    table_lookup(TPN, (char*[]){"Crunch", "51213", "*"}, true);
 
-    char*** result3 = table_lookup(TC, (char*[]){"Americans", "Toronto"});
-    print_query_results(TC, result3);
+    table_lookup(TC, (char*[]){"Americans", "Toronto"}, true);
 
     table_delete(GHVD, (char*[]){"4", "Redwings", "Maple Leafs", "6 Jan 2023"});
     print_table(GHVD);
@@ -64,8 +61,8 @@ void part3(void) {
 }
 
 int main(void) {
-    part1();
-    part2();
+//    part1();
+//    part2();
     part3();
     return 0;
 }

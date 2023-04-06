@@ -2,10 +2,11 @@
 #include "hashtable.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 bool table_insert(Table table, char** values) {
     // check if the row already exists
-    if (table_lookup(table, values) != NULL) return false;
+    if (table_lookup(table, values, false) != NULL) return false;
 
     // if the table does not have a primary attribute, use a dummy key and insert without hashing
     char* key = table->primary_attribute == -1 ? "*" : values[table->primary_attribute];
@@ -38,8 +39,9 @@ char** query_row(char** row, char** query, int num_attributes) {
     return row;
 }
 
-char*** table_lookup(Table table, char** query) {
+char*** table_lookup(Table table, char** query, bool print) {
     char*** result = malloc(sizeof(char**) * hashtable_size(table->hashtable));
+    int result_len = 0;
 
     // if either there's no primary attribute, or primary attribute is a wild card, loop through all the rows
     if (table->primary_attribute == -1 || strcmp(query[table->primary_attribute], "*") == 0) {
@@ -55,21 +57,47 @@ char*** table_lookup(Table table, char** query) {
             }
         }
 
-        if (j == 0) {
+        result_len = j;
+        if (j == 0)  {
+            if(print) printf("No results found.\n\n");
             return NULL;
         }
-
-        return result;
 
     // if primary attribute is specified, use it as the key for constant time hash table look up
     } else {
         char* key = query[table->primary_attribute];
         char** row = (char **) hashtable_get(table->hashtable, key);
-        if (row == NULL) return NULL;
+        if (row == NULL) {
+            if(print) printf("No results found.\n\n");
+            return NULL;
+        }
 
         result[0] = row;
-        return result;
+        result_len = 1;
     }
+
+    if (print) {
+        printf("Querying: {");
+        for (int i = 0; i < table->num_attributes; i++) {
+            printf("%s", query[i]);
+            if (i < table->num_attributes - 1)
+                printf(", ");
+        }
+        printf("}\n");
+
+        int num_columns = table_num_attributes(table);
+        for (int i = 0; i < result_len; i++) {
+            for (int j = 0; j < num_columns; j++) {
+                printf("%s", result[i][j]);
+                if (j < num_columns - 1)
+                    printf(", ");
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
+
+    return result;
 }
 
 bool table_delete(Table table, char** query) {
