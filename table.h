@@ -2,11 +2,20 @@
 #define DATABASE_TABLE_H
 
 #include <stdbool.h>
+#include "hashtable.h"
 
 typedef enum {
     INT,
     STRING,
 } TYPE;
+
+struct Table {
+    int num_attributes;
+    int primary_attribute;
+    char** attributes;
+    Hashtable hashtable;
+    int* max_column_widths;
+};
 
 typedef struct Table* Table;
 
@@ -24,17 +33,19 @@ int table_num_attributes(Table table);
 //
 //void table_add_primary_attribute(Table table, char* name, TYPE type);
 
+char*** table_values(Table table);
+
 void print_schema(Table table);
+
+void print_table(Table table);
+
+void print_query_results(Table table, char*** results);
 
 bool table_insert(Table table, char** values);
 
 char*** table_lookup(Table table, char** values);
 
 bool table_delete(Table table, char** query);
-
-void print_table(Table table);
-
-void print_query_results(Table table, char*** results);
 
 Table table_select(Table table, int query_pair_len, char** select_query);
 
