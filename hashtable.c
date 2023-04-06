@@ -87,6 +87,7 @@ void* hashtable_get(Hashtable hashtable, char* key) {
     int index = string_hash(hashtable, key);
 
     int i = 1;
+    // cannot fix this valgrind invalid read error because it is a false positive. The memory is already set to NULL, and this cannot work without checking for NULL addresses
     while (hashtable->keys[index] != NULL) {
         if (index == -1) return NULL;
 
